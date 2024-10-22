@@ -10,10 +10,9 @@ class Ormawa extends Model
     use HasFactory;
 
     protected $table = 'ormawa';
-
-    protected $primarykey = 'id_ormawa';
-
+    
     protected $fillable = [
+        'id_ormawa',
         'nama_ormawa',
         'nama_singkatan',   
     ];

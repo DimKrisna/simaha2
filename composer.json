@@ -6,12 +6,18 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "fruitcake/laravel-cors": "^2.0.5",
+        "barryvdh/laravel-dompdf": "^2.2",
+        "dompdf/dompdf": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
+        "google/apiclient": "^2.15",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.4"
+        "laravel/ui": "^4.4",
+        "mpdf/mpdf": "^6.1",
+        "wikimedia/aho-corasick": "^2.0",
+        "yaza/laravel-google-drive-storage": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -24,13 +30,14 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "App\\Libraries\\": "app/Libraries/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Wikimedia\\AhoCorasick\\": "vendor/wikimedia/aho-corasick/src"
         }
     },
     "scripts": {
@@ -60,4 +67,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true
+
+
 }

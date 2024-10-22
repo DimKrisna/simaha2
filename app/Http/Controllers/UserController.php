@@ -38,7 +38,7 @@ class UserController extends Controller
         }
         $user->save();
 
-        return redirect()->route('login')->with('success', 'Registration success. Please login!');
+        return redirect()->route('tambahUser')->with('success', 'User Baru Berhasil di Tambahkan!!');
     }
 
 
@@ -47,7 +47,7 @@ class UserController extends Controller
         $data['title'] = 'Login';
         return view('user/login', $data);
     }
-    //fungsi untuk login 
+    //fungsi untuk login
     public function login_action(Request $request)
     {
         $request->validate([
@@ -58,17 +58,27 @@ class UserController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            if ($user->id_role === 1) {
-                return dd("login sebagai mahasiswa");
-            } elseif ($user->id_role === 2) {
-                return redirect()->route('dataHima'); 
-            } elseif ($user->id_role === 3) {
-                return dd("sebagai apa");
-            } elseif ($user->id_role === 4) {
-                return dd("sebagai apa");
-            } elseif ($user->id_role === 5) {
-                return dd("ini sona ada di sini");
-            } 
+            switch ($user->id_role) {
+                case 1:
+                    return redirect()->route('ormawa');
+                case 2:
+                    return redirect()->route('read');
+                case 3:
+                    return redirect()->route('baca');
+                case 4:
+                    return redirect()->route('ormawabishum');
+                case 5:
+                    return redirect()->route('DataProdi');
+                case 6:
+                    return redirect()->route('ormawafst');
+                case 7:
+                    return redirect()->route('datafakultasdiploma');
+                default:
+                    return redirect('/home');
+            }
+        } else {
+
+
         }
 
         return back()->withErrors([
@@ -92,7 +102,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
         $request->session()->regenerate();
-        return back()->with('success', 'Password changed!');
+       return redirect()->route('login')->with('success', 'Password Berhasil Dirubah');
     }
     //fungsi logout
     public function logout(Request $request)

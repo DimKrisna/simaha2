@@ -30,25 +30,37 @@ body {
 
 .main {
     min-height: 100vh;
-    width: 100%;
+    width: calc(100% - 260px);
+    /* Default main width when sidebar is expanded */
     overflow: hidden;
     transition: all 0.35s ease-in-out;
     background-color: #fafbfe;
+    margin-left: 260px;
+    /* Default margin when sidebar is expanded */
 }
 
 #sidebar {
-    width: 70px;
-    min-width: 70px;
+    width: 260px;
+    min-width: 260px;
     z-index: 1000;
-    transition: all .25s ease-in-out;
+    transition: all 0.25s ease-in-out;
     background-color: #0e2238;
     display: flex;
     flex-direction: column;
+    position: fixed;
+    height: 100%;
 }
 
-#sidebar.expand {
-    width: 260px;
-    min-width: 260px;
+#sidebar.collapsed {
+    width: 70px;
+    min-width: 70px;
+}
+
+#sidebar.collapsed+.main {
+    width: calc(100% - 70px);
+    /* Main width when sidebar is collapsed */
+    margin-left: 70px;
+    /* Main margin when sidebar is collapsed */
 }
 
 .toggle-btn {
@@ -73,8 +85,8 @@ body {
     font-weight: 600;
 }
 
-#sidebar:not(.expand) .sidebar-logo,
-#sidebar:not(.expand) a.sidebar-link span {
+#sidebar.collapsed .sidebar-logo,
+#sidebar.collapsed a.sidebar-link span {
     display: none;
 }
 
@@ -98,22 +110,22 @@ a.sidebar-link {
 }
 
 .sidebar-link.active {
-    background-color: #f0f0f0; /* Ganti dengan warna yang Anda inginkan */
-    color: #333; /* Ganti dengan warna yang Anda inginkan */
+    background-color: #f0f0f0;
+    /* Ganti dengan warna yang Anda inginkan */
+    color: #333;
+    /* Ganti dengan warna yang Anda inginkan */
 }
-
-
 
 .sidebar-item {
     position: relative;
 }
 
-.sidebar-item:hover{
-    background-color:#fc9906f1;
+.sidebar-item:hover {
+    background-color: #fc9906f1;
     transition: all ease-in .3s;
 }
 
-#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+#sidebar.collapsed .sidebar-item .sidebar-dropdown {
     position: absolute;
     top: 0;
     left: 70px;
@@ -123,14 +135,14 @@ a.sidebar-link {
     display: none;
 }
 
-#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
+#sidebar.collapsed .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
     display: block;
     max-height: 15em;
     width: 100%;
     opacity: 1;
 }
 
-#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+#sidebar .sidebar-link[data-bs-toggle="collapse"]::after {
     border: solid;
     border-width: 0 .075rem .075rem 0;
     content: "";
@@ -143,7 +155,7 @@ a.sidebar-link {
     transition: all .2s ease-out;
 }
 
-#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+#sidebar .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
     transform: rotate(45deg);
     transition: all .2s ease-out;
 }
@@ -152,4 +164,211 @@ a.sidebar-link {
     text-align: center;
 }
 
+@media (max-width: 768px) {
+    #sidebar {
+        width: 260px;
+        /* Responsive sidebar width */
+    }
 
+    .main {
+        width: 100%;
+        /* Avoid left margin on main content in responsive mode */
+        margin-left: 0;
+    }
+
+    #sidebar.collapsed+.main {
+        width: 100%;
+        margin-left: 70px;
+    }
+}
+
+/* Tambahkan CSS untuk pusatkan tampilan waktu */
+.realtime-clock {
+    display: flex;
+    justify-content: left;
+    font-size: 14px;
+    font-weight: bold;
+    align-items: center;
+}
+
+/*css logout*/
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 5%;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+/*-------------------------------------------
+/*css untuk form pengajuan proposal dan lpj*/
+.form-container {
+    position: relative;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    overflow: hidden;
+    /* Menyembunyikan overflow */
+}
+
+.form-container h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="file"],
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container input[type="file"] {
+    padding: 4px 10px;
+    /* Adjust padding for smaller size */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    width: auto;
+    /* Auto width for file input */
+    display: block;
+
+}
+
+.form-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container input[type="date"] {
+    width: 25%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container .add-date-button {
+    width: 16%;
+    padding: 8px;
+    margin-bottom: 10px;
+    margin-left: 2px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.form-container input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    /* Menambahkan margin atas */
+    float: right;
+    /* Menggeser tombol ke kanan */
+}
+
+.form-container select[multiple] {
+    height: auto !important;
+}
+
+.button-container {
+    float: right;
+    /* Menggeser container ke kanan */
+}
+
+
+/*css untuk tampil detail prop */
+
+/* Gaya untuk container-tampilprop */
+.container-tampilprop {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Gaya untuk judul halaman */
+.container-tampilprop h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Gaya untuk tabel */
+.container-tampilprop table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+/* Gaya untuk header tabel */
+.container-tampilprop th {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+}
+
+/* Gaya untuk sel dalam tabel */
+.container-tampilprop td {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* Gaya untuk baris ganjil dalam tabel */
+.container-tampilprop tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}

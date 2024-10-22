@@ -1,0 +1,75 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0e2238;
+
+}
+h1 {
+    font-family: 'Nama Font', source sans pro;
+    font-size: 2em;
+    text-align: center;
+    color:#3a3737;
+
+}
+
+.container {
+    display: flex;
+    width:fit-content;
+    justify-content: center; /* Menengahkan container */
+
+}
+
+.form-container {
+    width: 450px;
+    padding: 20px;
+    background: #fff;
+    border: 2px solid #3498db;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    margin-right: 20px; /* Jarak antara form dan logo */
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #2980b9;
+}
+
+.logo-container {
+    flex-shrink: 0; /* Menahan ukuran logo agar tidak meregang */
+}
+
+.logo-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    background: #fff;
+}
