@@ -54,10 +54,10 @@
                     </a>
                     <ul id="laporan" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Kegiatan</a>
+                            <a href="{{route('ListLaporanRektor')}}"class="sidebar-link">Kegiatan</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Tahunan</a>
+                            <a href="{{route('ListLaporanTahunanRektor')}}" class="sidebar-link">Tahunan</a>
                         </li>
                     </ul>
                 </li>

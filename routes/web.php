@@ -44,8 +44,8 @@ Route::get('/tambah-ormawa', [AdminController::class, 'create'])->name('create')
 Route::get('/tambah-data', [AdminController::class, 'store'])->name('store');
 Route::delete('/ormawa/{id}', [AdminController::class, 'destroy'])->name('ormawa.destroy');
 Route::get('/show/{id}', [AdminController::class, 'show']);
-Route::get('/informasi{id}',[AdminController::class,'informasi'])->name('informasi');
-Route::get('/struktur-organisasi',[AdminController::class,'struktur'])->name('struktur');
+Route::get('/informasi{id}', [AdminController::class, 'informasi'])->name('informasi');
+Route::get('/struktur-organisasi', [AdminController::class, 'struktur'])->name('struktur');
 Route::get('/tambah-user', [AdminController::class, 'tambahUser'])->name('tambahUser');
 Route::get('/tambah-form', [AdminController::class, 'tambah'])->name('tambah');
 Route::delete('/users/{user_id}', [AdminController::class, 'hapus'])->name('hapus');
@@ -54,15 +54,15 @@ Route::get('/detail-monitor/{id}', [AdminController::class, 'detailmonitor'])->n
 Route::post('/update-monitor/{id}', [AdminController::class, 'updateMonitor'])->name('updateMonitor');
 Route::get('/analisa', [AdminController::class, 'statis'])->name('statis');
 Route::get('/proposal-kegiatan-admin', [AdminController::class, 'proposalkegiatan'])->name('proposalkegiatan');
-Route::get('/proposal-detail-kegiatan-admin{id}',[AdminController::class,'detailproposaladmin'])->name('detailproposaladmin');
+Route::get('/proposal-detail-kegiatan-admin{id}', [AdminController::class, 'detailproposaladmin'])->name('detailproposaladmin');
 Route::get('/laporan-kegiatan-admin', [AdminController::class, 'laporankegiatan'])->name('laporankegiatan');
 Route::get('/proposal-eksidentil-admin', [AdminController::class, 'proposaleksidentil'])->name('proposaleksidentil');
-Route::get('/proposal-detail-eksidentil-admin{id}',[AdminController::class,'detaileksidentil'])->name('detaileksidentil');
-Route::get('/laporan-detail-kegiatan-admin{id}',[AdminController::class,'detaillaporan'])->name('detaillaporan');
-Route::put('/update-laporan/{id}', [AdminController::class, 'updatelaporan'])->name('updatelaporan');
+Route::get('/proposal-detail-eksidentil-admin{id}', [AdminController::class, 'detaileksidentil'])->name('detaileksidentil');
+Route::get('/laporan-detail-kegiatan-admin{id}', [AdminController::class, 'detaillaporan'])->name('detaillaporan');
+Route::put('/update-laporan-kemahasiswaan/{id}', [AdminController::class, 'updatelaporankemahasiswaan'])->name('updatelaporankemahasiswaan');
 Route::post('/acc-laporan-kegiatan/{id}', [AdminController::class, 'acclaporankegiatan'])->name('acclaporankegiatan');
 Route::get('/laporan-tahunan-admin', [AdminController::class, 'laporantahunan'])->name('laporantahunan');
-Route::get('/laporan-detail-tahunan-admin{id}',[AdminController::class,'detailtahunan'])->name('detailtahunan');
+Route::get('/laporan-detail-tahunan-admin{id}', [AdminController::class, 'detailtahunan'])->name('detailtahunan');
 Route::post('/acc-laporan-tahunan/{id}', [AdminController::class, 'acclaporantahunan'])->name('acclaporantahunan');
 Route::put('/proposal_kemahasiswaan/{id}', [AdminController::class, 'updateproposalkemahasiswaan'])->name('updateproposalkemahasiswaan');
 Route::put('/acc_proposal_kemahasiswaan/{id}', [AdminController::class, 'accProposal_kemahasiswaan'])->name('accproposalkemahasiswaan');
@@ -84,20 +84,24 @@ Route::middleware(['web'])->group(function () {
 Route::get('/data-hima', [RektorController::class, 'baca'])->name('baca');
 Route::get('/struktur-organisasi1', [RektorController::class, 'struktur1'])->name('struktur1');
 Route::get('/laporan-kegiatan-rektor', [RektorController::class, 'laporankegiatanwr3'])->name('laporankegiatanwr3');
-Route::get('/laporan-detail-kegiatan-rektor{id}',[RektorController::class,'detaillaporanwr3'])->name('detaillaporanwr3');
 Route::post('/acc-laporan-kegiatan-wr3/{id}', [RektorController::class, 'acclaporankegiatanwr3'])->name('acclaporankegiatanwr3');
 Route::get('/laporan-tahunan-rektor', [RektorController::class, 'laporantahunanwr3'])->name('laporantahunanwr3');
-Route::get('/laporan-detail-tahunan-rektor{id}',[RektorController::class,'detailtahunanwr3'])->name('detailtahunanwr3');
+Route::get('/laporan-detail-tahunan-rektor{id}', [RektorController::class, 'detailtahunanwr3'])->name('detailtahunanwr3');
 Route::post('/acc-laporan-tahunan-wr3/{id}', [RektorController::class, 'acclaporantahunanwr3'])->name('acclaporantahunanwr3');
 Route::get('/analisa1', [RektorController::class, 'statis1'])->name('statis1');
-Route::get('/rektor-info{id}',[RektorController::class,'informasiRektor'])->name('informasiRektor');
-Route::get('/proposalkegiatanrektor', [RektorController::class,'proposalkegiatanrektor'])->name ('proposalkegiatanrektor');
-Route::get('/proposalinsidentilrektor', [RektorController::class,'proposalinsidentilrektor'])->name ('proposalinsidentilrektor');
-Route::get('/detail-proposal-kegiatan-rektor/{encryptedId}', [RektorController::class,'tampilpropprokerrektor'])->name ('tampilpropprokerrektor');
-Route::get('/detail-proposal-insidentil-rektor/{encryptedId}', [RektorController::class,'tampilpropinsidentilrektor'])->name ('tampilpropinsidentilrektor');
-Route::put('/revisi-proposal-rektor/{id}', [RektorController::class,'updateproposalrektor'])->name ('updateproposalrektor');
+Route::get('/rektor-info{id}', [RektorController::class, 'informasiRektor'])->name('informasiRektor');
+Route::get('/proposalkegiatanrektor', [RektorController::class, 'proposalkegiatanrektor'])->name('proposalkegiatanrektor');
+Route::get('/proposalinsidentilrektor', [RektorController::class, 'proposalinsidentilrektor'])->name('proposalinsidentilrektor');
+Route::get('/detail-proposal-kegiatan-rektor/{encryptedId}', [RektorController::class, 'tampilpropprokerrektor'])->name('tampilpropprokerrektor');
+Route::get('/detail-proposal-insidentil-rektor/{encryptedId}', [RektorController::class, 'tampilpropinsidentilrektor'])->name('tampilpropinsidentilrektor');
+Route::put('/revisi-proposal-rektor/{id}', [RektorController::class, 'updateproposalrektor'])->name('updateproposalrektor');
 Route::put('/acc_proposal_rektor/{id}', [RektorController::class, 'accProposal_rektor'])->name('accProposal_rektor');
-
+//---------------------------------------route wakil rektor 3 penambahan fitur laporan---------------------------------------
+Route::get('/list-laporan-wr3', [RektorController::class, 'ListLaporanRektor'])->name('ListLaporanRektor');
+Route::get('/list-laporan-tahunan-wr3', [RektorController::class, 'ListLaporanTahunanRektor'])->name('ListLaporanTahunanRektor');
+Route::get('/laporan-detail-kegiatan-rektor{id}', [RektorController::class, 'detaillaporanwr3'])->name('detaillaporanwr3');
+Route::put('/update-laporan-rektor/{id}', [RektorController::class, 'UpdateLaporanRektor'])->name('UpdateLaporanRektor');
+Route::put('/update-proposal/{id}', [RektorController::class, 'updateproposal'])->name('update-proposal');
 
 //---------------------------------------route fakultas---------------------------------------
 
@@ -109,8 +113,8 @@ Route::get('/datapropinsidentilfst', [FakultasController::class, 'proposalkegiat
 Route::get('/datalaporankegiatanfst', [FakultasController::class, 'laporankegiatanFST'])->name('laporankegiatanFST');
 Route::get('/datalaporantahunanfst', [FakultasController::class, 'laporantahunanFST'])->name('laporantahunanFST');
 Route::get('/monitoring-kegiatanfst', [FakultasController::class, 'monitoringkegiatanfst'])->name('monitoringkegiatanFST');
-Route::put('/update-proposalFakultas/{id}', [FakultasController::class, 'updateproposalfakultas'])->name('update.proposalFakultas');
-Route::get('/detail-proposal/{id_proposal}', [FakultasController::class, 'detailProposalFakultas'])->name('detail_proposal_fakultas');
+Route::put('/update-proposalFakultas/{id}', [FakultasController::class, 'updateproposalfakultas'])->name('update.proposalFakultasSaintek');
+Route::get('/detail-proposal/{id_proposal}', [FakultasController::class, 'detailProposalFakultas'])->name('detail_proposal_fakultas_saintek');
 Route::get('/detail-monitor-kegiatanfst/{id}', [FakultasController::class, 'detailmonitorkegiatanFakultas'])->name('detail.monitor.kegiatan.Fakultas');
 Route::get('/detail-laporan-fakultas/{id_laporan}', [FakultasController::class, 'showDetailLaporanFakultas'])->name('showDetailLaporanFakultas');
 Route::put('/acc-proposal-fakultas/{id}', [FakultasController::class, 'accProposalFakultas'])->name('acc.proposal.fakultas');
@@ -126,7 +130,7 @@ Route::get('/proposal-kegiatan-insidentil-bishum', [FakultasController::class, '
 Route::get('/laporan-kegiatan-bishum', [FakultasController::class, 'laporankegiatanbishum'])->name('laporankegiatanbishum');
 Route::get('/laporan-tahunan-bishum', [FakultasController::class, 'laporantahunanbishum'])->name('laporantahunanbishum');
 Route::get('/monitoring-kegiatan-bishum', [FakultasController::class, 'monitoringkegiatanbishum'])->name('monitoringkegiatanbishum');
-Route::put('/update-proposalFakultasbishum/{id}', [FakultasController::class, 'updateproposalfakultasbishum'])->name('update.proposalFakultas');
+Route::put('/update-proposalFakultasbishum/{id}', [FakultasController::class, 'updateproposalfakultasbishum'])->name('update.proposalFakultasBishum');
 Route::get('/detail-proposal-bishum/{id_proposal}', [FakultasController::class, 'detailProposalfakultasbishum'])->name('detail_proposal_fakultas');
 Route::get('/detail-monitor-kegiatanbishum/{id}', [FakultasController::class, 'detailmonitorkegiatanfakultasbishum'])->name('detail.monitor.kegiatan.fakultasbishum');
 Route::get('/detail-laporan-fakultasbishum/{id_laporan}', [FakultasController::class, 'showDetailLaporanfakultasbishum'])->name('showDetailLaporanfakultasbishum');
@@ -151,7 +155,9 @@ Route::get('/laporan-tahunan-prodi', [ProdiController::class, 'laporantahunanpro
 Route::get('/monitoring-kegiatan', [ProdiController::class, 'monitoringkegiatan'])->name('monitoringkegiatan');
 Route::get('/detail-monitor-kegiatan/{id}', [ProdiController::class, 'detailmonitorkegiatan'])->name('detail.monitor.kegiatan');
 Route::get('/detail-laporan/{id_laporan}', [ProdiController::class, 'showDetailLaporan'])->name('showDetailLaporan');
-Route::put('/update-laporan/{id}', [ProdiController::class, 'updatelaporan'])->name('updatelaporan');
+
+//update buat ulang sesuai dengan alur bisnis baru
+Route::put('/update-laporan-prodi/{id}', [ProdiController::class, 'updatelaporanprodi'])->name('updatelaporanprodi');
 Route::put('/acclaporan/{id}', [ProdiController::class, 'acclaporan'])->name('acclaporan');
 Route::get('/data-kepengurusan-ormawa', [ProdiController::class, 'datakepengurusanormawa'])->name('datakepengurusanormawa');
 Route::get('/detailproker/{id_proker}', [ProdiController::class, 'datadetailproker'])->name('datadetailproker');
@@ -160,7 +166,18 @@ Route::get('/struktur-organisasi-prodi', [ProdiController::class, 'strukturprodi
 
 //-----------------route ormawa------------------------------------------
 Route::get('ormawa', [OrmawaController::class, 'ormawa'])->name('ormawa');
-Route::get('/infopengajuan',[OrmawaController::class,'informasiPengajuan'])->name('informasiPengajuan');
+
+Route::get('/tampilpropproker', [OrmawaController::class, 'tampilkanPropProker'])->name('tampilkanPropProker');
+Route::get('/form-pengajuan-prop-proker', [OrmawaController::class, 'formpropproker'])->name('formpropproker');
+Route::post('/pengajuanproposalproker', [OrmawaController::class, 'pengajuanpropproker'])->name('pengajuanpropproker');
+
+Route::get('/pengajuanpropinsidentil', [OrmawaController::class, 'tampilkanPropInsiden'])->name('pengajuanpropinsidentil');
+Route::get('/form-pengajuan-insidentil', [OrmawaController::class, 'forminsidentil'])->name('forminsidentil');
+Route::post('/pengajuanpropinsidentil', [OrmawaController::class, 'pengajuanpropinsidentil'])->name('pengajuanprop_insidentil');
+
+Route::get('/pdf_proposal/{id_proposal}', [OrmawaController::class, 'showlampiranproposal'])->name('showlampiranproposal');
+
+Route::get('/infopengajuan', [OrmawaController::class, 'informasiPengajuan'])->name('informasiPengajuan');
 Route::get('/proposal_kegiatan/{encryptedId}', [OrmawaController::class, 'tampilprop'])->name('tampilprop');
 Route::get('/proposal_kegiatan/insidentil/{encryptedId}', [OrmawaController::class, 'tampilpropinsidentil'])->name('tampilpropinsidentil');
 Route::get('/laporan/{id_laporan}', [OrmawaController::class, 'TampilDetailLaporan'])->name('DetailLaporan');
@@ -175,19 +192,10 @@ Route::delete('/delete-detail-kepengurusan/{npm}', [OrmawaController::class, 'de
 Route::get('/show-form-divisi', [OrmawaController::class, 'showFormDivisi'])->name('showFormDivisi');
 Route::post('/input-detail-kepengurusan-divisi', [OrmawaController::class, 'inputDetailKepengurusanDivisi'])->name('inputDetailKepengurusanDivisi');
 Route::post('/input-detail-kepengurusan-divisi', [OrmawaController::class, 'inputDetailKepengurusanDivisi'])->name('inputDetailKepengurusanDivisi');
-Route::delete('/delete-detail-kepengurusan-divisi/{npm}',[OrmawaController::class, 'deleteDetailKepengurusanDivisi'] )->name('deleteDetailKepengurusanDivisi');
+Route::delete('/delete-detail-kepengurusan-divisi/{npm}', [OrmawaController::class, 'deleteDetailKepengurusanDivisi'])->name('deleteDetailKepengurusanDivisi');
 
 Route::get('/pdf_proposal/{id_proposal}', [OrmawaController::class, 'showlampiranproposal'])->name('showlampiranproposal');
 
-//route prop proker
-Route::get('/tampilpropproker', [OrmawaController::class, 'tampilkanPropProker'])->name('tampilkanPropProker');
-Route::get('/form-pengajuan-prop-proker', [OrmawaController::class, 'formpropproker'])->name('formpropproker');
-Route::post('/pengajuanproposalproker', [OrmawaController::class, 'pengajuanpropproker'])->name('pengajuanpropproker');
-
-//route prop insidentil
-Route::get('/pengajuanpropinsidentil', [OrmawaController::class, 'tampilkanPropInsiden'])->name('pengajuanpropinsidentil');
-Route::get('/form-pengajuan-insidentil', [OrmawaController::class, 'forminsidentil'])->name('forminsidentil');
-Route::post('/pengajuanpropinsidentil', [OrmawaController::class, 'pengajuanpropinsidentil'])->name('pengajuanprop_insidentil');
 
 //route pelaporan LPJ
 Route::get('/laporan', [OrmawaController::class, 'tampilkanDataLaporan'])->name('laporan_kegiatan');
@@ -220,7 +228,7 @@ Route::post('/upload-laporan-kegiatan', [OrmawaController::class, 'uploadlaporan
 
 Route::get('/download-pengesahan', [OrmawaController::class, 'downloadFile'])->name('download.pengesahan');
 Route::get('/pengesahan/{encryptedId}', [OrmawaController::class, 'pengesahan'])->name('proposal.pengesahan');
-Route:: get('/pengesahanlaporan/{encryptedId}', [OrmawaController::class, 'pengesahanlaporan'])->name('laporan.pengesahan');
+Route::get('/pengesahanlaporan/{encryptedId}', [OrmawaController::class, 'pengesahanlaporan'])->name('laporan.pengesahan');
 
 
 //route untuk peringkat
@@ -228,5 +236,3 @@ Route::get('/spk-input-data', [PeringkatController::class, 'inputdata'])->name('
 Route::post('/spk-normalisasi', [PeringkatController::class, 'handleNormalisasi'])->name('normalisasi.post');
 Route::get('/spk-normalisasi/{periode}', [PeringkatController::class, 'normalisasi'])->name('normalisasi.get');
 Route::get('/spk-data-statistik/{id}', [PeringkatController::class, 'datastatistik'])->name('datastatistik');
-
-

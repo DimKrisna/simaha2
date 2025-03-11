@@ -5,27 +5,26 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "barryvdh/laravel-dompdf": "^2.2",
-        "dompdf/dompdf": "^2.0",
-        "fruitcake/laravel-cors": "^3.0",
-        "google/apiclient": "^2.15",
+        "php": "^8.2",
+        "dompdf/dompdf": "^3.0.1",
+        "google/apiclient": "^2.18.1",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^9.0",
-        "laravel/sanctum": "^2.14",
+        "laravel/framework": "^11.34.2",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.4",
-        "mpdf/mpdf": "^6.1",
+        "laravel/ui": "^4.6.0",
+        "mpdf/mpdf": "^8.0",
         "wikimedia/aho-corasick": "^2.0",
-        "yaza/laravel-google-drive-storage": "^2.0"
+        "yajra/laravel-datatables-oracle": "^11.1",
+        "yaza/laravel-google-drive-storage": "^3.0"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.0.1",
+        "fakerphp/faker": "^1.24.1",
+        "laravel/sail": "^1.39.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "nunomaduro/collision": "^8.5",
+        "phpunit/phpunit": "^11.5.0"
+
     },
     "autoload": {
         "psr-4": {
@@ -67,6 +66,4 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true
-
-
 }

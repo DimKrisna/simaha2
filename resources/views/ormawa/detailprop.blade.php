@@ -4,26 +4,47 @@
     <div class="container">
         <div class="form-container">
             <h1>Detail Proposal Kegiatan</h1>
-            @if ($proposal)
-            <br>
-            <table class="table table-striped table-bordered text-center">
-                <thead>
-                    <tr>
-                        <th scope="col">Status Prodi</th>
-                        <th scope="col">Status Kemahasiswaan</th>
-                        <th scope="col">Status Wakil Rektor 3</th>
-                        <th scope="col">Status Fakultas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $proposal->statuses->status_kaprodi }}</td>
-                        <td>{{ $proposal->statuses->status_kemahasiswaan }}</td>
-                        <td>{{ $proposal->statuses->status_wr3 }}</td>
-                        <td>{{ $proposal->statuses->status_dekanat }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+           @if (str_starts_with(auth()->user()->id_ormawa, '1'))
+                    <table class="table table-striped table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">Status Prodi</th>
+                                <th scope="col">Status Fakultas</th>
+                                <th scope="col">Status Kemahasiswaan</th>
+                                <th scope="col">Status Rektorat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $statuses->status_kaprodi }}</td>
+                                <td>{{ $statuses->status_dekanat }}</td>
+                                <td>{{ $statuses->status_kemahasiswaan }}</td>
+                                <td>{{ $statuses->status_wr3 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @elseif (str_starts_with(auth()->user()->id_ormawa, '2'))
+                    <table class="table table-striped table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">Status Kemahasiswaan</th>
+                                <th scope="col">Status Wakil Rektor 3 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $statuses->status_kemahasiswaan }}</td>
+                                <td>{{ $statuses->status_wr3 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @endif
             <br>
             <form id="proposal_form" action="{{ route('proposal_update', $proposal->id_proposal) }}" method="POST">
                 @csrf

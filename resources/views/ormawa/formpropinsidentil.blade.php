@@ -57,9 +57,10 @@
                     <label for="anggaran_diajukan">Anggaran Diajukan:</label>
                     <input type="number" id="anggaran_diajukan" name="anggaran_diajukan" required>
 
-                    <label for="lampiran">Lampiran: *file Pdf</label>
+                    {{-- <label for="lampiran">Lampiran: *file Pdf</label>
                     <input type="file" name="lampiran" id="lampiran" accept="application/pdf" class="form-control-file"
-                        required><br>
+                        required> --}}
+                        <br>
 
                     <div class="date-flex-container">
                         <div id="waktu_kegiatan_container">

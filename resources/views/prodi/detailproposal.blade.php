@@ -52,7 +52,6 @@
             <input type="text" id="anggaran_diajukan" name="anggaran_diajukan"
                 value="{{ 'Rp ' . number_format($proposal->anggaran_diajukan, 0, ',', '.') }}" readonly>
 
-
             @if ($proposal->waktu_kegiatan)
                 <div class="form-row">
                     <div class="form-group">
@@ -104,7 +103,7 @@
                 <label for="catatan_prodi" class="form-label">Catatan Prodi:</label>
             </div>
             <div class="col-md-9">
-                <textarea name="catatan_prodi" id="catatan_prodi" class="form-control" 
+                <textarea name="catatan_prodi" id="catatan_prodi" class="form-control"
                     placeholder="Masukkan catatan" disabled>{{ $proposal->catatan_prodi ?? '' }}</textarea>
             </div>
         </div>

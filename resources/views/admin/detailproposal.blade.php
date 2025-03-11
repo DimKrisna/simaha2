@@ -104,7 +104,7 @@
                 <label for="catatan_kemahasiswaan" class="form-label">Catatan Kemahasiswaan:</label>
             </div>
             <div class="col-md-9">
-                <textarea name="catatan_kemahasiswaan" id="catatan_kemahasiswaan" class="form-control" 
+                <textarea name="catatan_kemahasiswaan" id="catatan_kemahasiswaan" class="form-control"
                     placeholder="Masukkan catatan" disabled>{{ $proposal->catatan_kemahasiswaan ?? '' }}</textarea>
             </div>
         </div>

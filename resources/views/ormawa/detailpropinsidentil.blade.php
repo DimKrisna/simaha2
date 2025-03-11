@@ -1,29 +1,56 @@
 @extends('sidebarormawa')
 
 @section('content')
-    <div class="container">
-        <div class="form-container">
-            <h1>Detail Laporan Kegiatan</h1>
-                 @isset($proposal)
-                <br>
+<div class="container">
+    <div class="form-container">
+        <h1>Detail Laporan Kegiatan</h1>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @isset($proposal->statuses)
+            @if (str_starts_with(auth()->user()->id_ormawa, '1'))
                 <table class="table table-striped table-bordered text-center">
                     <thead>
                         <tr>
                             <th scope="col">Status Prodi</th>
-                            <th scope="col">Status Kemahasiswaan</th>
-                            <th scope="col">Status Wakil Rektor 3</th>
                             <th scope="col">Status Fakultas</th>
+                            <th scope="col">Status Kemahasiswaan</th>
+                            <th scope="col">Status Rektorat</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_kaprodi : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_kemahasiswaan : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_wr3 : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_dekanat : 'N/A' }}</td>
+                            <td>{{ $proposal->statuses->status_kaprodi }}</td>
+                            <td>{{ $proposal->statuses->status_dekanat }}</td>
+                            <td>{{ $proposal->statuses->status_kemahasiswaan }}</td>
+                            <td>{{ $proposal->statuses->status_wr3 }}</td>
                         </tr>
                     </tbody>
                 </table>
+            @elseif (str_starts_with(auth()->user()->id_ormawa, '2'))
+                <table class="table table-striped table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Status Kemahasiswaan</th>
+                            <th scope="col">Status Wakil Rektor 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ $proposal->statuses->status_kemahasiswaan }}</td>
+                            <td>{{ $proposal->statuses->status_wr3 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            @endif
+        @else
+            <div class="alert alert-danger">
+                Status tidak ditemukan.
+            </div>
+        @endisset
                 <br>
                 <form id="proposal_form" action="{{ route('proposal_update', $proposal->id_proposal) }}" method="POST">
                     @csrf
@@ -124,9 +151,7 @@
                         </div>
                     </div>
                 </form>
-            @else
-                <p>Proposal tidak ditemukan.</p>
-            @endisset
+
         </div>
     </div>
     <br>

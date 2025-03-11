@@ -31,8 +31,4 @@
                 </tbody>
             </table>
         @endif
-        <div class="d-flex justify-content-center">
-            {{ $laporan->links('vendor.pagination') }}
-        </div>
-    </div>
 @endsection

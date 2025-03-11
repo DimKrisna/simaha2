@@ -53,21 +53,22 @@ class ProdiController extends Controller
         return view('prodi/dataprodi', compact('databph', 'datadivisi', 'nama_ormawa'));
     }
 
-   public function proposalkegiatanproker()
-{
-    $id_ormawa = Auth::user()->id_ormawa;
+    public function proposalkegiatanproker()
+    {
+        $id_ormawa = Auth::user()->id_ormawa;
 
-    $proposal = DB::table('proposal_kegiatan')
-        ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal')
-        ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
-        ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
-        ->where('proposal_kegiatan.jenis_proposal', '=', 'Proker')
-        ->where('detail_proposal.status_kaprodi', '=', 'Revisi')
-        ->where('proposal_kegiatan.id_ormawa', '=', $id_ormawa)
-        ->get();
+        $proposal = DB::table('proposal_kegiatan')
+            ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal', 'proposal_kegiatan.tanggal_pengajuan')
+            ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
+            ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
+            ->where('proposal_kegiatan.jenis_proposal', '=', 'Proker')
+            ->where('detail_proposal.status_kaprodi', '=', 'Revisi')
+            ->where('proposal_kegiatan.id_ormawa', '=', $id_ormawa)
+            ->paginate(5); // Add pagination here
 
-    return view('prodi/proposalproker', ['proposal' => $proposal]);
-}
+        return view('prodi/proposalproker', ['proposal' => $proposal]);
+    }
+
 
 
     public function  proposalinsidentil()
@@ -112,29 +113,45 @@ class ProdiController extends Controller
     }
 
     public function updateproposal(Request $request, $id)
-{
-    // Validate data
-    $request->validate([
-        'status_kaprodi' => 'required',  // This remains required
-        'catatan_prodi' => 'nullable|string', // Allow null by default
-    ]);
-
-    // Update catatan_prodi in proposal_kegiatan
-    DB::table('proposal_kegiatan')
-        ->where('id_proposal', $id)
-        ->update([
-            'catatan_prodi' => $request->catatan_prodi,
+    {
+        // Validate data
+        $request->validate([
+            'status_kaprodi' => 'required',  // This remains required
+            'catatan_prodi' => 'nullable|string', // Allow null by default
         ]);
 
-    // Update status_kaprodi in detail_proposal
-    DB::table('detail_proposal')
-        ->where('id_proposal', $id)
-        ->update([
-            'status_kaprodi' => $request->status_kaprodi,
-        ]);
+        // Update catatan_prodi in proposal_kegiatan
+        DB::table('proposal_kegiatan')
+            ->where('id_proposal', $id)
+            ->update([
+                'catatan_prodi' => $request->catatan_prodi,
+            ]);
 
-    return redirect()->back()->with('success', 'Status dan catatan berhasil diperbarui');
-}
+        // Update status_kaprodi in detail_proposal
+        DB::table('detail_proposal')
+            ->where('id_proposal', $id)
+            ->update([
+                'status_kaprodi' => $request->status_kaprodi,
+            ]);
+
+        // Check if status_kaprodi is 'Tolak'
+        if ($request->status_kaprodi === 'Tolak') {
+            // Get id_proker from proposal_kegiatan
+            $id_proker = DB::table('proposal_kegiatan')
+                ->where('id_proposal', $id)
+                ->value('id_proker');
+
+            // Update the status in the proker table
+            if ($id_proker) {
+                DB::table('proker')
+                    ->where('id_proker', $id_proker)
+                    ->update(['status' => 'Tolak']);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Status dan catatan berhasil diperbarui');
+    }
+
 
     public function accProposal($id)
     {
@@ -147,7 +164,7 @@ class ProdiController extends Controller
         return redirect()->back()->with('success', 'Proposal berhasil disetujui');
     }
 
-    public function laporankegiatan()
+    public function laporankegiatanprodi()
     {
         // Ambil id_ormawa dari pengguna yang sedang terautentikasi
         $id_ormawa = Auth::user()->id_ormawa;
@@ -159,7 +176,7 @@ class ProdiController extends Controller
             ->where('laporan.jenis_laporan', '=', 'LPJ')
             ->where('detail_laporan.status_kaprodi', '=', 'Revisi')
             ->where('laporan.id_ormawa', '=', $id_ormawa)
-            ->paginate(2);
+            ->get();
 
         return view('prodi/laporankegiatan', ['laporan' => $laporan]);
     }
@@ -207,13 +224,13 @@ class ProdiController extends Controller
         // Mengambil data detail berdasarkan id proposal
 
         $detail = DB::table('monitoring')
-             ->select('proposal_kegiatan.judul_kegiatan', 'monitoring.keterangan', 'monitoring.waktu', 'monitoring.foto')
-             ->join('proposal_kegiatan', 'monitoring.id_proposal', '=', 'proposal_kegiatan.id_proposal')
-             ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
-             ->where('monitoring.status', '=', 'NOT OKE')
-             ->where('ormawa.id_ormawa', $id_ormawa)
-             ->where('monitoring.id_monitoring', $id)
-             ->first();
+            ->select('proposal_kegiatan.judul_kegiatan', 'monitoring.keterangan', 'monitoring.waktu', 'monitoring.foto')
+            ->join('proposal_kegiatan', 'monitoring.id_proposal', '=', 'proposal_kegiatan.id_proposal')
+            ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
+            ->where('monitoring.status', '=', 'NOT OKE')
+            ->where('ormawa.id_ormawa', $id_ormawa)
+            ->where('monitoring.id_monitoring', $id)
+            ->first();
 
         return view('prodi/detailmonitoring', ['detail' => $detail]);
     }
@@ -231,10 +248,12 @@ class ProdiController extends Controller
     }
 
     //update laporan kegiatan dan tahunan
-    public function updatelaporan(Request $request, $id)
+    public function updatelaporanprodi(Request $request, $id)
     {
-        // Validasi data
+        // Validasi data input awal
         $request->validate([
+            'status_kaprodi' => 'required',
+            'catatan_prodi' => 'nullable|string',
             'judul_kegiatan' => 'required',
             'rencana_kegiatan' => 'required',
             'relasi_kegiatan' => 'required',
@@ -243,10 +262,16 @@ class ProdiController extends Controller
             'penutup' => 'required',
         ]);
 
-        // Update data laporan
+        // Update detail_laporan.status_kaprodi
+        DB::table('detail_laporan')
+            ->where('id_laporan', $id)
+            ->update(['status_kaprodi' => $request->status_kaprodi]);
+
+        // Update catatan_prodi di tabel laporan
         DB::table('laporan')
             ->where('id_laporan', $id)
             ->update([
+                'catatan_prodi' => $request->catatan_prodi,
                 'judul_kegiatan' => $request->judul_kegiatan,
                 'rencana_kegiatan' => $request->rencana_kegiatan,
                 'relasi_kegiatan' => $request->relasi_kegiatan,
@@ -255,9 +280,10 @@ class ProdiController extends Controller
                 'penutup' => $request->penutup,
             ]);
 
-        // Redirect dengan pesan sukses
-        return redirect()->back()->with('success', 'Laporan berhasil diperbarui');
+        //return redirect()->back()->with('success', 'Laporan berhasil diperbarui');
+        return dd('update data prodi');
     }
+
 
     public function acclaporan($id)
     {
@@ -275,7 +301,7 @@ class ProdiController extends Controller
             ->update(['status_kaprodi' => 'ACC']);
 
         // Redirect kembali ke halaman sebelumnya
-        return redirect()->back()->with('success', 'Laporan berhasil di-ACC');
+        return dd('berhasil');
     }
 
     public function datakepengurusanormawa()
@@ -312,14 +338,19 @@ class ProdiController extends Controller
             )
             ->where('ormawa.id_ormawa', $id_ormawa)
             ->whereRaw('kepengurusan_ormawa.periode = (SELECT MAX(periode) FROM kepengurusan_ormawa WHERE id_ormawa = ?)', [$id_ormawa])
-            ->paginate(5);
+            ->paginate(5, ['*'], 'divisiPage');  // Custom pagination page name for datadivisi
 
         $prokers = DB::table('proker')
             ->where('id_ormawa', $id_ormawa)
-            ->paginate(1);
+            ->paginate(10, ['*'], 'prokerPage');  // Custom pagination page name for prokers
 
-        return view('prodi/dataormawa', ['databph' => $databph, 'datadivisi' => $datadivisi, 'prokers' => $prokers]);
+        return view('prodi/dataormawa', [
+            'databph' => $databph,
+            'datadivisi' => $datadivisi,
+            'prokers' => $prokers
+        ]);
     }
+
 
     public function datadetailproker($id_proker)
     {
@@ -337,9 +368,9 @@ class ProdiController extends Controller
         return redirect()->back()->with('error', 'Proker tidak ditemukan.');
     }
 
-    public function strukturprodi(){
+    public function strukturprodi()
+    {
 
         return view('prodi/struktur');
     }
-
 }

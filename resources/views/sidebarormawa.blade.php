@@ -118,5 +118,25 @@
     <script src="script.js"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
+<footer class="bg-white text-grey text-center py-3 mt-auto">
+    <div class="container">
+        <p class="mb-0">© {{ date('Y') }} SIMAHA - All Rights Reserved.</p>
+        <p class="mb-0">Developed by [Your Team/Organization Name]</p>
+        {{-- <div class="mt-2">
+            <a href="#" class="text-white me-3">
+                <i class="lni lni-facebook-filled"></i>
+            </a>
+            <a href="#" class="text-white me-3">
+                <i class="lni lni-twitter-filled"></i>
+            </a>
+            <a href="#" class="text-white me-3">
+                <i class="lni lni-instagram-filled"></i>
+            </a>
+            <a href="#" class="text-white">
+                <i class="lni lni-linkedin-original"></i>
+            </a>
+        </div> --}}
+    </div>
+</footer>
 
 </html>

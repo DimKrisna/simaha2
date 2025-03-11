@@ -2,145 +2,135 @@
 
 @section('content')
     <div class="container">
-        <div class="form-container">
-            <h1>Detail Proposal Kegiatan</h1>
-            @if ($proposal)
-                <br>
-                <table class="table table-striped table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">Status Prodi</th>
-                            <th scope="col">Status Kemahasiswaan</th>
-                            <th scope="col">Status Wakil Rektor 3</th>
-                            <th scope="col">Status Fakultas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_kaprodi : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_kemahasiswaan : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_wr3 : 'N/A' }}</td>
-                            <td>{{ $proposal->statuses ? $proposal->statuses->status_dekanat : 'N/A' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br>
-                <form id="proposal_form" action="{{ route('updateproposalrektor', $proposal->id_proposal) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="tema">Tema:</label>
-                            <input type="text" id="tema" name="tema" value="{{ $proposal->tema }}" >
-                        </div>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-                        <div class="form-group">
-                            <label for="judul_kegiatan">Judul Kegiatan:</label>
-                            <input type="text" id="judul_kegiatan" name="judul_kegiatan"
-                                value="{{ $proposal->judul_kegiatan }}" >
-                        </div>
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <div class="form-container mt-4">
+            <h1> Data Proposal Kegiatan</h1>
+
+            <label for="tema">Tema:</label>
+            <input type="text" id="tema" name="tema" value="{{ $proposal->tema }}" readonly>
+
+            <label for="judul_kegiatan">Judul Kegiatan:</label>
+            <input type="text" id="judul_kegiatan" name="judul_kegiatan" value="{{ $proposal->judul_kegiatan }}"
+                readonly>
+
+            <label for="jenis_proposal">Jenis Proposal:</label>
+            <input type="text" id="jenis_proposal" name="jenis_proposal" value="{{ $proposal->jenis_proposal }}"
+                readonly>
+
+            <label for="latar_belakang">Latar Belakang:</label>
+            <textarea id="latar_belakang" name="latar_belakang" rows="4" readonly>{{ $proposal->latar_belakang }}</textarea>
+
+            <label for="deskripsi_kegiatan">Deskripsi Kegiatan:</label>
+            <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4" readonly>{{ $proposal->deskripsi_kegiatan }}</textarea>
+
+            <label for="tujuan_kegiatan">Tujuan Kegiatan:</label>
+            <textarea id="tujuan_kegiatan" name="tujuan_kegiatan" rows="4" readonly>{{ $proposal->tujuan_kegiatan }}</textarea>
+
+            <label for="manfaat_kegiatan">Manfaat Kegiatan:</label>
+            <textarea id="manfaat_kegiatan" name="manfaat_kegiatan" rows="4" readonly>{{ $proposal->manfaat_kegiatan }}</textarea>
+
+            <label for="tempat_pelaksanaan">Tempat Pelaksanaan:</label>
+            <input type="text" id="tempat_pelaksanaan" name="tempat_pelaksanaan"
+                value="{{ $proposal->tempat_pelaksanaan }}" readonly>
+
+            <label for="anggaran_kegiatan">Anggaran Kegiatan:</label>
+            <input type="text" id="anggaran_kegiatan" name="anggaran_kegiatan"
+                value="{{ 'Rp ' . number_format($proposal->anggaran_kegiatan, 0, ',', '.') }}" readonly>
+
+            <label for="anggaran_diajukan">Anggaran Diajukan:</label>
+            <input type="text" id="anggaran_diajukan" name="anggaran_diajukan"
+                value="{{ 'Rp ' . number_format($proposal->anggaran_diajukan, 0, ',', '.') }}" readonly>
+
+            @if ($proposal->waktu_kegiatan)
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="waktu_kegiatan">Waktu Kegiatan:</label>
+                        <ul>
+                            @foreach ($proposal->waktu_kegiatan as $waktu)
+                                <li>
+                                    <input type="text" value="{{ date('d-m-Y', strtotime($waktu->waktu_kegiatan)) }}"
+                                        readonly>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="latar_belakang">Latar Belakang:</label>
-                            <textarea id="latar_belakang" name="latar_belakang" rows="4" >{{ $proposal->latar_belakang }} (masukan revisi jika ada)</textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="deskripsi_kegiatan">Deskripsi Kegiatan:</label>
-                            <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="4" >{{ $proposal->deskripsi_kegiatan }}(masukan revisi jika ada)</textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="tujuan_kegiatan">Tujuan Kegiatan:</label>
-                            <textarea id="tujuan_kegiatan" name="tujuan_kegiatan" rows="4" >{{ $proposal->tujuan_kegiatan }}(masukan revisi jika ada)</textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="manfaat_kegiatan">Manfaat Kegiatan:</label>
-                            <textarea id="manfaat_kegiatan" name="manfaat_kegiatan" rows="4" >{{ $proposal->manfaat_kegiatan }}(masukan revisi jika ada)</textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="tempat_pelaksanaan">Tempat Pelaksanaan:</label>
-                            <input type="text" id="tempat_pelaksanaan" name="tempat_pelaksanaan"
-                                value="{{ $proposal->tempat_pelaksanaan }}" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="anggaran_kegiatan">Anggaran Kegiatan:</label>
-                            <input type="number" id="anggaran_kegiatan" name="anggaran_kegiatan"
-                                value="{{ $proposal->anggaran_kegiatan }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="anggaran_diajukan">Anggaran Diajukan:</label>
-                            <input type="number" id="anggaran_diajukan" name="anggaran_diajukan"
-                                value="{{ $proposal->anggaran_diajukan }}" readonly>
-                        </div>
-                    </div>
-
-                    @if ($proposal->waktu_kegiatan)
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="waktu_kegiatan">Waktu Kegiatan:</label>
-                                <ul>
-                                    @foreach ($proposal->waktu_kegiatan as $waktu)
-                                        <li>
-                                            <input type="text"
-                                                value="{{ date('d-m-Y', strtotime($waktu->waktu_kegiatan)) }}" readonly>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-                    <br>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lampiran">Lampiran :</label>
-                            <a href="{{route ('showlampiranproposal', $proposal->id_proposal)}}" class="btn btn-primary">Lihat Lampiran</a>
-                        </div>
-                        <br>
-                    </div>
-                    </div><br>
-                    <div class="button-container">
-                        <!-- Tombol Revisi -->
-                        <form action="{{ route('updateproposalrektor', ['id' => $proposal->id_proposal]) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="btn btn-secondary" name="revisi" value="1">
-                                <i class="lni lni-arrow-left-circle"></i> Revisi
-                            </button>
-                        </form>
-
-                        <!-- Tombol Back -->
-                        <a class="btn btn-danger" href="{{ route('proposalinsidentilrektor') }}" role="button">
-                            <i class="lni lni-arrow-left-circle"></i> Back
-                        </a>
-                    </div>
-                </form>
-
-            </form>
-            <!-- Tombol ACC -->
-            <form action="{{ route('accProposal_rektor', $proposal->id_proposal) }}" method="POST" style="display: inline;">
-              @csrf
-              @method('PUT')
-              <button type="submit" class="btn btn-success">
-                  <i class="lni lni-checkmark-circle"></i> ACC
-              </button>
-          </form>
-            @else
-                <p>Proposal tidak ditemukan.</p>
+                </div>
             @endif
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lampiran">Lampiran :</label>
+                    <a href="{{ route('showlampiranproposal', $proposal->id_proposal) }}" class="btn btn-primary">Lihat
+                        Lampiran</a>
+                </div>
+                <br>
+            </div>
+
+            <hr>
+
+            <div class="d-flex align-items-center mb-2">
+                <div class="w-20 fw-bold">Status Pengajuan Tingkat Wakil Rektor 3</div>
+                <div class="me-2">:</div>
+            </div>
+<form action="{{ route('update-proposal', ['id' => $proposal->id_proposal]) }}" method="POST">
+    @csrf
+    @method('PUT')
+    <div class="form-group mb-4 p-3 border rounded shadow-sm bg-light">
+        <div class="row align-items-center mb-3">
+            <div class="col-md-3 fw-bold">Status Proposal:</div>
+            <div class="col-md-9">
+                <select class="form-select w-50" id="status_wr3" name="status_wr3" required>
+                    <option value="" disabled selected>---</option>
+                    <option value="Acc">Acc</option>
+                    <option value="Revisi">Revisi</option>
+                    <option value="Tolak">Tolak</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 fw-bold">
+                <label for="catatan_rektor" class="form-label">Catatan Wakil Rektor 3:</label>
+            </div>
+            <div class="col-md-9">
+                <textarea name="catatan_rektor" id="catatan_rektor" class="form-control"
+                    placeholder="Masukkan catatan" disabled>{{ $proposal->catatan_rektor ?? '' }}</textarea>
+            </div>
         </div>
     </div>
-    <br>
+
+    <div class="d-flex justify-content-end gap-3 mt-4">
+        <!-- Back Button -->
+        <a class="btn btn-danger d-flex align-items-center" href="{{ route('proposalkegiatanproker') }}" role="button">
+            <i class="lni lni-arrow-left-circle me-2"></i> Back
+        </a>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary d-flex align-items-center">
+            <i class="lni lni-save me-2"></i> Update
+        </button>
+    </div>
+</form>
+
+<script>
+    document.getElementById('status_wr3').addEventListener('change', function() {
+        var catatanRektor = document.getElementById('catatan_rektor');
+        if (this.value === 'Revisi' || this.value === 'Tolak') {
+            catatanRektor.disabled = false;  // Enable textarea
+        } else {
+            catatanRektor.disabled = true;   // Disable textarea
+            catatanRektor.value = '';        // Clear textarea if disabled
+        }
+    });
+</script>
 @endsection

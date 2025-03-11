@@ -1,12 +1,22 @@
 @extends('sidebarfakultassaintek')
 @section('content')
     <div class="container">
+        <h1 class="text-center mt-5 mb-4">List Proposal Eksidentil Ormawa</h1>
+
+    <form method="GET" action="{{ route('proposalkegiataninsidentilFST') }}" class="d-flex justify-content-left mb-3">
+        <div class="input-group" style="max-width: 300px; gap: 8px;">
+            <input type="text" name="search" class="form-control" placeholder="Cari..." value="{{ request('search') }}">
+            <button type="submit" class="btn btn-primary">Cari</button>
+            <a href="{{ route('proposalkegiataninsidentilFST') }}" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+
         @if ($proposal->isEmpty())
             <div class="alert alert-danger mt-4" role="alert">
                 Belum Ada Proposal yang diajukan
             </div>
         @else
-            <h1 class="text-center mt-5 mb-4">List Proposal Kegiatan Ormawa</h1>
+
             <div class="col-4">
             </div><br>
             <table class="table table-striped">

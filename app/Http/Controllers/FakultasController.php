@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class FakultasController extends Controller
 {
-//-------------------------------saintek-----------------------//
+    //-------------------------------saintek-----------------------//
     public function ormawafst()
     {
         // Mengambil data kepengurusan ormawa
@@ -35,51 +35,82 @@ class FakultasController extends Controller
             ->where('detail_kepengurusan.jabatan', 9)
             ->where('kepengurusan_ormawa.periode', '=', DB::raw('(SELECT MAX(`periode`) FROM `kepengurusan_ormawa`)'))
             ->where('ormawa.id_ormawa', 'LIKE', '12%')
-            ->paginate(10);
+            ->paginate(10); // Pagination for datafst
 
         // Mengambil data proker dari tabel proker dengan kondisi id_ormawa LIKE '12%', termasuk nama_ormawa yang berelasi
         $dataProker = DB::table('proker')
             ->join('ormawa', 'proker.id_ormawa', '=', 'ormawa.id_ormawa')
             ->select('proker.*', 'ormawa.nama_ormawa')
             ->where('proker.id_ormawa', 'LIKE', '12%')
-            ->paginate(8);
+            ->paginate(8); // Pagination for dataProker
 
         // Mengembalikan view dengan data proker dan kepengurusan ormawa
         return view('fakultas.saintek.datafst', compact('datafst', 'dataProker'));
     }
 
-    public function proposalkegiatanprokerFST()
+
+    public function proposalkegiatanprokerFST(Request $request)
     {
-        // Mengambil data proposal kegiatan yang sesuai dengan kriteria
-        $proposal = DB::table('proposal_kegiatan')
-            ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal')
+        $query = DB::table('proposal_kegiatan')
+            ->select(
+                'proposal_kegiatan.judul_kegiatan',
+                'ormawa.nama_ormawa',
+                'proposal_kegiatan.id_proposal'
+            )
             ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
             ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
-            ->where('proposal_kegiatan.jenis_proposal', '=', 'Proker')
-            ->where('detail_proposal.status_dekanat', '=', 'Revisi')
-            ->where('detail_proposal.status_wr3', '=', 'ACC')
-            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '12%')
-            
-            ->get();
+            ->where('proposal_kegiatan.jenis_proposal', 'Proker')
+            ->where('detail_proposal.status_dekanat', 'Revisi')
+            ->where('detail_proposal.status_kaprodi', 'ACC')
+            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '12%');
 
-        // Mengirim data proposal ke view 'prodi/proposalproker'
-        return view('fakultas.saintek.dataproposalproker', ['proposal' => $proposal]);
+        // Menambahkan pencarian berdasarkan inputan (LIKE untuk nama ormawa atau judul kegiatan)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('ormawa.nama_ormawa', 'LIKE', "%$search%")
+                    ->orWhere('proposal_kegiatan.judul_kegiatan', 'LIKE', "%$search%");
+            });
+        }
+
+        $proposal = $query->paginate(8);
+
+        return view('fakultas.saintek.dataproposalproker', compact('proposal'));
     }
 
-    public function  proposalkegiataninsidentilFST()
+
+
+    public function proposalkegiataninsidentilFST(Request $request)
     {
-        $proposal = DB::table('proposal_kegiatan')
-            ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal')
+        // Query awal untuk mengambil data proposal
+        $query = DB::table('proposal_kegiatan')
+            ->select(
+                'proposal_kegiatan.judul_kegiatan',
+                'ormawa.nama_ormawa',
+                'proposal_kegiatan.id_proposal'
+            )
             ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
             ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
-            ->where('proposal_kegiatan.jenis_proposal', '=', 'Insidentil')
-            ->where('detail_proposal.status_dekanat', '=', 'Revisi')
-            ->where('detail_proposal.status_wr3', '=', 'ACC')
-            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '12%')
-            ->get();
+            ->where('proposal_kegiatan.jenis_proposal', 'Insidentil')
+            ->where('detail_proposal.status_dekanat', 'Revisi')
+            ->where('detail_proposal.status_kaprodi', 'ACC')
+            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '12%');
 
-        return view('fakultas.saintek.dataproposalinsidentil', ['proposal' => $proposal]);
+        // Filter berdasarkan nama_ormawa jika dipilih
+        if ($request->filled('nama_ormawa')) {
+            $query->where('ormawa.nama_ormawa', $request->nama_ormawa);
+        }
+
+        // Ambil data dengan pagination
+        $proposal = $query->paginate(8);
+
+        // Ambil daftar unik nama_ormawa untuk dropdown filter
+        $ormawaList = DB::table('ormawa')->distinct()->pluck('nama_ormawa');
+
+        // Mengirim data ke view
+        return view('fakultas.saintek.dataproposalinsidentil', compact('proposal', 'ormawaList'));
     }
+
 
     public function laporankegiatanFST()
     {
@@ -125,37 +156,27 @@ class FakultasController extends Controller
 
     public function updateproposalfakultas(Request $request, $id)
     {
-        // Validasi data
+        // Validate data
         $request->validate([
-            'tema' => 'required',
-            'judul_kegiatan' => 'required',
-            'latar_belakang' => 'required',
-            'deskripsi_kegiatan' => 'required',
-            'tujuan_kegiatan' => 'required',
-            'manfaat_kegiatan' => 'required',
-            'tempat_pelaksanaan' => 'required',
-            'anggaran_kegiatan' => 'required|numeric',
-            'anggaran_diajukan' => 'required|numeric',
+            'status_dekanat' => 'required',  // This remains required
+            'catatan_fakultas' => 'nullable|string', // Allow null by default
         ]);
-        // Update data proposal
+
+        // Update catatan_prodi in proposal_kegiatan
         DB::table('proposal_kegiatan')
             ->where('id_proposal', $id)
             ->update([
-                'tema' => $request->tema,
-                'judul_kegiatan' => $request->judul_kegiatan,
-                'latar_belakang' => $request->latar_belakang,
-                'deskripsi_kegiatan' => $request->deskripsi_kegiatan,
-                'tujuan_kegiatan' => $request->tujuan_kegiatan,
-                'manfaat_kegiatan' => $request->manfaat_kegiatan,
-                'tempat_pelaksanaan' => $request->tempat_pelaksanaan,
-                'anggaran_kegiatan' => $request->anggaran_kegiatan,
-                'anggaran_diajukan' => $request->anggaran_diajukan,
+                'catatan_fakultas' => $request->catatan_fakultas,
             ]);
-        // Update status_dekanat menjadi 'Revisi' di tabel detail_proposal
+
+        // Update status_kaprodi in detail_proposal
         DB::table('detail_proposal')
             ->where('id_proposal', $id)
-            ->update(['status_dekanat' => 'Revisi']);
-        return redirect()->back()->with('success', 'Data proposal berhasil direvisi');
+            ->update([
+                'status_dekanat' => $request->status_dekanat,
+            ]);
+
+        return redirect()->back()->with('success', 'Status dan catatan berhasil diperbarui');
     }
 
     public function detailProposalFakultas($id_proposal)
@@ -165,17 +186,23 @@ class FakultasController extends Controller
             ->first();
 
         if ($proposal) {
-            // Mengambil data waktu kegiatan
+            $detailProposal = DB::table('detail_proposal')
+                ->select('status_dekanat')
+                ->where('id_proposal', $id_proposal)
+                ->first();
+            if ($detailProposal) {
+                $proposal->status_dekanat = $detailProposal->status_dekanat;
+            }
+
             $waktu_kegiatan = DB::table('detail_waktu_kegiatan_proposal')
                 ->select('waktu_kegiatan')
                 ->where('id_proposal', $id_proposal)
                 ->get();
 
-            // Menambahkan data waktu kegiatan ke dalam objek proposal
             $proposal->waktu_kegiatan = $waktu_kegiatan;
+
             return view('fakultas.saintek.detailproposal', compact('proposal'));
         } else {
-            // Tangani jika proposal tidak ditemukan
             return view('fakultas.saintek.detailproposal')->with('error', 'Proposal tidak ditemukan.');
         }
     }
@@ -219,8 +246,10 @@ class FakultasController extends Controller
 
     public function updatelaporanFakultas(Request $request, $id)
     {
-        // Validasi data
+        // Validasi data input
         $request->validate([
+            'status_dekanat' => 'required',
+            'catatan_fakultas' => 'required',
             'judul_kegiatan' => 'required',
             'rencana_kegiatan' => 'required',
             'relasi_kegiatan' => 'required',
@@ -228,10 +257,18 @@ class FakultasController extends Controller
             'penggunaan_dana' => 'required',
             'penutup' => 'required',
         ]);
-        // Update data laporan
+
+
+        // Update status_dekanat di tabel detail_laporan
+        DB::table('detail_laporan')
+            ->where('id_laporan', $id)
+            ->update(['status_dekanat' => $request->status_dekanat]);
+
+        // Update catatan_dekanat dan lainnya di tabel laporan
         DB::table('laporan')
             ->where('id_laporan', $id)
             ->update([
+                'catatan_fakultas' => $request->catatan_fakultas,
                 'judul_kegiatan' => $request->judul_kegiatan,
                 'rencana_kegiatan' => $request->rencana_kegiatan,
                 'relasi_kegiatan' => $request->relasi_kegiatan,
@@ -240,27 +277,11 @@ class FakultasController extends Controller
                 'penutup' => $request->penutup,
             ]);
 
-        // Redirect dengan pesan sukses
         return redirect()->back()->with('success', 'Laporan berhasil diperbarui');
     }
-    public function acclaporanfakultas($id)
-    {
-        $laporan = DB::table('detail_laporan')
-            ->where('id_laporan', $id)
-            ->first();
 
-        if (!$laporan) {
-            return redirect()->back()->with('error', 'Laporan tidak ditemukan');
-        }
 
-        // Lakukan pembaruan kolom status_kemahasiswaan menjadi 'ACC'
-        DB::table('detail_laporan')
-            ->where('id_laporan', $id)
-            ->update(['status_dekanat' => 'ACC']);
 
-        // Redirect kembali ke halaman sebelumnya
-        return redirect()->back()->with('success', 'Laporan berhasil di-ACC');
-    }
 
     public function datakepengurusanormawaFakultas($encryptedId)
     {
@@ -342,7 +363,7 @@ class FakultasController extends Controller
     public function ormawabishum()
     {
         // Mengambil data kepengurusan ormawa
-        $databishum = DB::table('detail_kepengurusan')
+        $datafst = DB::table('detail_kepengurusan')
             ->join('kepengurusan_ormawa', 'detail_kepengurusan.id_detail_kepengurusan', '=', 'kepengurusan_ormawa.id_kepengurusan')
             ->join('ormawa', 'kepengurusan_ormawa.id_ormawa', '=', 'ormawa.id_ormawa')
             ->join('mahasiswa', 'detail_kepengurusan.npm', '=', 'mahasiswa.npm')
@@ -359,49 +380,76 @@ class FakultasController extends Controller
             ->where('detail_kepengurusan.jabatan', 9)
             ->where('kepengurusan_ormawa.periode', '=', DB::raw('(SELECT MAX(`periode`) FROM `kepengurusan_ormawa`)'))
             ->where('ormawa.id_ormawa', 'LIKE', '11%')
-            ->paginate(10);
+            ->paginate(10); // Pagination for datafst
 
         // Mengambil data proker dari tabel proker dengan kondisi id_ormawa LIKE '12%', termasuk nama_ormawa yang berelasi
         $dataProker = DB::table('proker')
             ->join('ormawa', 'proker.id_ormawa', '=', 'ormawa.id_ormawa')
             ->select('proker.*', 'ormawa.nama_ormawa')
             ->where('proker.id_ormawa', 'LIKE', '11%')
-            ->paginate(8);
+            ->paginate(8); // Pagination for dataProker
 
         return view('fakultas.bishum.databishum', compact('databishum', 'dataProker'));
     }
 
-    public function proposalkegiatanprokerbishum()
+    public function proposalkegiatanprokerbishum(Request $request)
     {
-        // Mengambil data proposal kegiatan yang sesuai dengan kriteria
-        $proposal = DB::table('proposal_kegiatan')
-            ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal')
+        // Query awal untuk mengambil data proposal
+        $query = DB::table('proposal_kegiatan')
+            ->select(
+                'proposal_kegiatan.judul_kegiatan',
+                'ormawa.nama_ormawa',
+                'proposal_kegiatan.id_proposal'
+            )
             ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
             ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
-            ->where('proposal_kegiatan.jenis_proposal', '=', 'Proker')
-            ->where('detail_proposal.status_dekanat', '=', 'Revisi')
-            ->where('detail_proposal.status_wr3', '=', 'ACC')
-            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '11%')
-            ->get();
+            ->where('proposal_kegiatan.jenis_proposal', 'Proker')
+            ->where('detail_proposal.status_dekanat', 'Revisi')
+            ->where('detail_proposal.status_wr3', 'ACC')
+            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '11%');
 
-        // Mengirim data proposal ke view 'prodi/proposalproker'
-        return view('fakultas.bishum.dataproposalproker', ['proposal' => $proposal]);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('ormawa.nama_ormawa', 'LIKE', "%$search%")
+                    ->orWhere('proposal_kegiatan.judul_kegiatan', 'LIKE', "%$search%");
+            });
+        }
+        $proposal = $query->paginate(8);
+
+        return view('fakultas.bishum.dataproposalproker', compact('proposal'));
     }
 
-    public function  proposalkegiataninsidentilbishum()
+
+    public function proposalkegiataninsidentilbishum(Request $request)
     {
-        $proposal = DB::table('proposal_kegiatan')
-            ->select('proposal_kegiatan.judul_kegiatan', 'ormawa.nama_ormawa', 'proposal_kegiatan.id_proposal')
+        // Query awal untuk mengambil data proposal
+        $query = DB::table('proposal_kegiatan')
+            ->select(
+                'proposal_kegiatan.judul_kegiatan',
+                'ormawa.nama_ormawa',
+                'proposal_kegiatan.id_proposal'
+            )
             ->join('ormawa', 'proposal_kegiatan.id_ormawa', '=', 'ormawa.id_ormawa')
             ->join('detail_proposal', 'proposal_kegiatan.id_proposal', '=', 'detail_proposal.id_proposal')
-            ->where('proposal_kegiatan.jenis_proposal', '=', 'Insidentil')
-            ->where('detail_proposal.status_dekanat', '=', 'Revisi')
-            ->where('detail_proposal.status_wr3', '=', 'ACC')
-            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '11%')
-            ->get();
+            ->where('proposal_kegiatan.jenis_proposal', 'Insidentil')
+            ->where('detail_proposal.status_dekanat', 'Revisi')
+            ->where('detail_proposal.status_wr3', 'ACC')
+            ->where('proposal_kegiatan.id_ormawa', 'LIKE', '11%');
 
-        return view('fakultas.bishum.dataproposalinsidentil', ['proposal' => $proposal]);
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('ormawa.nama_ormawa', 'LIKE', "%$search%")
+                      ->orWhere('proposal_kegiatan.judul_kegiatan', 'LIKE', "%$search%");
+                });
+            }
+
+        $proposal = $query->paginate(8);
+
+        return view('fakultas.bishum.dataproposalinsidentil', compact('proposal'));
     }
+
 
     public function laporankegiatanbishum()
     {
@@ -445,45 +493,29 @@ class FakultasController extends Controller
         return view('fakultas.bishum.monitoring', ['monitoring' => $monitoring]);
     }
 
-
-
-
-
-
-
     public function updateproposalfakultasbishum(Request $request, $id)
     {
-        // Validasi data
+        // Validate data
         $request->validate([
-            'tema' => 'required',
-            'judul_kegiatan' => 'required',
-            'latar_belakang' => 'required',
-            'deskripsi_kegiatan' => 'required',
-            'tujuan_kegiatan' => 'required',
-            'manfaat_kegiatan' => 'required',
-            'tempat_pelaksanaan' => 'required',
-            'anggaran_kegiatan' => 'required|numeric',
-            'anggaran_diajukan' => 'required|numeric',
+            'status_dekanat' => 'required',  // This remains required
+            'catatan_fakultas' => 'nullable|string', // Allow null by default
         ]);
-        // Update data proposal
+
+        // Update catatan_prodi in proposal_kegiatan
         DB::table('proposal_kegiatan')
             ->where('id_proposal', $id)
             ->update([
-                'tema' => $request->tema,
-                'judul_kegiatan' => $request->judul_kegiatan,
-                'latar_belakang' => $request->latar_belakang,
-                'deskripsi_kegiatan' => $request->deskripsi_kegiatan,
-                'tujuan_kegiatan' => $request->tujuan_kegiatan,
-                'manfaat_kegiatan' => $request->manfaat_kegiatan,
-                'tempat_pelaksanaan' => $request->tempat_pelaksanaan,
-                'anggaran_kegiatan' => $request->anggaran_kegiatan,
-                'anggaran_diajukan' => $request->anggaran_diajukan,
+                'catatan_fakultas' => $request->catatan_prodi,
             ]);
-        // Update status_dekanat menjadi 'Revisi' di tabel detail_proposal
+
+        // Update status_kaprodi in detail_proposal
         DB::table('detail_proposal')
             ->where('id_proposal', $id)
-            ->update(['status_dekanat' => 'Revisi']);
-        return redirect()->back()->with('success', 'Data proposal berhasil direvisi');
+            ->update([
+                'status_dekanat' => $request->status_kaprodi,
+            ]);
+
+        return redirect()->back()->with('success', 'Status dan catatan berhasil diperbarui');
     }
 
     public function detailProposalfakultasbishum($id_proposal)
@@ -493,14 +525,21 @@ class FakultasController extends Controller
             ->first();
 
         if ($proposal) {
-            // Mengambil data waktu kegiatan
+            $detailProposal = DB::table('detail_proposal')
+                ->select('status_dekanat')
+                ->where('id_proposal', $id_proposal)
+                ->first();
+            if ($detailProposal) {
+                $proposal->status_dekanat = $detailProposal->status_dekanat;
+            }
+
             $waktu_kegiatan = DB::table('detail_waktu_kegiatan_proposal')
                 ->select('waktu_kegiatan')
                 ->where('id_proposal', $id_proposal)
                 ->get();
 
-            // Menambahkan data waktu kegiatan ke dalam objek proposal
             $proposal->waktu_kegiatan = $waktu_kegiatan;
+
             return view('fakultas.bishum.detailproposal', compact('proposal'));
         } else {
             // Tangani jika proposal tidak ditemukan
@@ -663,28 +702,6 @@ class FakultasController extends Controller
         // Tampilkan view dengan data proker, id enkripsi, dan nama singkatan
         return view('fakultas.bishum.detailproker', compact('proker', 'encryptedId', 'nama_singkatan'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

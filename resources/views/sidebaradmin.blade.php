@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,17 +79,19 @@
                         <span>Struktur</span>
                     </a>
                 </li>
-                
+               <!--
                 <li class="sidebar-item">
-                    <a href="{{ route('find.similar.proposals') }}" class="sidebar-link">
+                    <a href="{{ route ('find.similar.proposals') }}" class="sidebar-link">
                         <i class="lni lni-bar-chart"></i>
                         <span>Analisa</span>
                     </a>
                 </li>
-               
 
-                 <li class="sidebar-item">
-                    <a href="{{ route('inputdata') }}" class="sidebar-link">
+
+
+                -->
+                                 <li class="sidebar-item">
+                                   <a href="{{ route('inputdata') }}" class="sidebar-link">
                         <i class="lni lni-star-half"></i>
                         <span>Peringkat</span>
                     </a>

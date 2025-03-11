@@ -39,19 +39,20 @@
                             <td><a href="{{ route('tampilprop', Crypt::encryptString($proposal->id_proposal)) }}"
                                     class="btn btn-primary"><i class="lni lni-eye" style="vertical-align: middle;"></i>
                                     <span style="vertical-align: middle; margin-left: 2px;">Detail</span></a></td>
-                            <td>
+                           <td>
+    @if ($proposal->status_akhir != 'Revisi')
+        <a href="{{ route('proposal.pengesahan', Crypt::encryptString($proposal->id_proposal)) }}" 
+           class="btn btn-primary">
+           <i class="lni lni-download" style="vertical-align: middle;"></i>
+           <span style="vertical-align: middle; margin-left: 2px;">Pengesahan</span></a>
+    @else
+        <button class="btn btn-primary" disabled>
+           <i class="lni lni-download" style="vertical-align: middle;"></i>
+           <span style="vertical-align: middle; margin-left: 2px;">Pengesahan</span>
+        </button>
+    @endif
+</td>
 
-                                @if ($proposal->status_akhir != 'Revisi')
-                                    <a href="{{ route('proposal.pengesahan', Crypt::encryptString($data->id_proposal)) }}"
-                                        class="btn btn-primary"><i class="lni lni-download"
-                                            style="vertical-align: middle;"></i>
-                                        <span style="vertical-align: middle; margin-left: 2px;">Pengesahan</span></a>
-                                @else
-                                    <button class="btn btn-primary" disabled><i class="lni lni-download"
-                                            style="vertical-align: middle;"></i>
-                                        <span style="vertical-align: middle; margin-left: 2px;">Pengesahan</span>
-                                @endif
-                            </td>
                             <td>
                                 @if ($proposal->status_akhir != 'Revisi')
                                     <a href="{{ route('uploadproposalpdf') }}" class="btn btn-primary"><i
@@ -73,7 +74,7 @@
     </div>
     </tbody>
     </table>
-    
+
 
     @endif
 @endsection

